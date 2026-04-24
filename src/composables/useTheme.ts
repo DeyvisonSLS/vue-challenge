@@ -4,7 +4,7 @@ const isDark = ref(false)
 
 export function useTheme() {
   const updateDom = () => {
-    document.documentElement.classList.toggle('dark', isDark.value);
+    document.documentElement.classList.toggle('dark', isDark.value)
   }
 
   watch(isDark, () => updateDom())

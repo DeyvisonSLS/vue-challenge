@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import Login from './views/Login.vue'
-import { useTheme } from '@/composables/useTheme'
-import { onMounted } from 'vue'
+  import Login from './views/Login.vue'
+  import { useTheme } from '@/composables/useTheme'
+  import { onMounted } from 'vue'
 
-const { initTheme } = useTheme()
+  const { initTheme } = useTheme()
 
-onMounted(() => {
-  initTheme()
-})
+  onMounted(() => {
+    initTheme()
+  })
 </script>
 
 <template>
-  <main class="flex flex-col h-screen w-screen items-center justify-center">
+  <main class="flex h-screen w-screen flex-col items-center justify-center">
     <RouterView />
   </main>
 </template>

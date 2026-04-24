@@ -1,29 +1,43 @@
 <script setup lang="ts">
-interface Props {
-  title: string
-  description: string
-}
+  interface Props {
+    title: string
+    description: string
+  }
 
-const props = withDefaults(defineProps<Props>(), {
-  title: 'Title',
-  description: 'This is where the description goes.',
-})
+  const props = withDefaults(defineProps<Props>(), {
+    title: 'Title',
+    description: 'This is where the description goes.',
+  })
 </script>
 <template lang="">
   <div>
     <!-- Backdrop -->
-    <div class="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
       <!-- Modal content -->
-      <div class="bg-card rounded-4xl border border-border shadow-lg w-full max-w-md overflow-clip">
+      <div
+        class="entrance-animation bg-card border-border w-full max-w-lg overflow-clip border shadow-lg"
+        style="animationdelay: 200ms"
+      >
         <div
-          class="h-70 mask-b-to-100% bg-linear-to-t from-primary to-transparent bg-[url(img/modal-welcome-gray.png)] bg-cover bg-center"
+          class="from-primary h-80 bg-linear-to-t bg-[url(img/modal-welcome-gray.png)] to-transparent mask-b-to-100% bg-cover bg-center"
         ></div>
-        <div class="p-6">
-          <h2 class="text-2xl font-bold mb-4">{{ title }}</h2>
-          <p class="text-foreground mb-6">{{ description }}</p>
+        <div class="p-6 text-center">
+          <h2
+            class="entrance-animation mb-4 font-bold *:text-2xl"
+            style="animationdelay: 300ms"
+          >
+            {{ title }}
+          </h2>
+          <p
+            class="entrance-animation text-foreground mb-6"
+            style="animationdelay: 500ms"
+          >
+            {{ description }}
+          </p>
           <button
             @click="$emit('close')"
-            class="btn-primary w-full font-medium"
+            class="entrance-animation btn-primary w-full font-medium"
+            style="animationdelay: 800ms"
           >
             Entendi!
           </button>
@@ -32,3 +46,22 @@ const props = withDefaults(defineProps<Props>(), {
     </div>
   </div>
 </template>
+
+<style lang="css">
+  @keyframes fade-in-slide {
+    from {
+      opacity: 0;
+      transform: translateY(5%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0%);
+    }
+  }
+
+  .entrance-animation {
+    opacity: 0;
+    will-change: transform, opacity;
+    animation: fade-in-slide 0.9s ease forwards;
+  }
+</style>

@@ -45,19 +45,26 @@
 
 @layer components {
   .btn-global {
-    @apply flex flex-row justify-center items-center bg-primary/60 hover:bg-primary w-full text-background hover:text-background/80 focus:outline-none focus:ring-2 focus:ring-primary/50 py-3 px-4 cursor-pointer transition-colors duration-200;
+    @apply bg-primary/60 hover:bg-primary text-background hover:text-background/80 focus:ring-primary/50 flex w-full cursor-pointer flex-row items-center justify-center px-4 py-3 transition-colors duration-200 focus:ring-2 focus:outline-none;
   }
 
   .btn-primary {
-    @apply flex flex-row text-sm text-foreground justify-center items-center bg-primary text-background hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-primary/50 py-3.5 px-4 cursor-pointer transition-colors duration-200;
+    @apply text-foreground bg-primary hover:bg-primary/80 focus:ring-primary/50 flex max-h-10 cursor-pointer flex-row items-center justify-center gap-2 px-4 py-3.5 text-sm transition-colors duration-200 focus:ring-2 focus:outline-none;
+  }
+
+  .btn-destructive {
+    @apply text-foreground bg-primary flex max-h-10 cursor-pointer flex-row items-center justify-center gap-2 px-4 py-3.5 text-sm transition-colors duration-200 hover:bg-red-500/80 focus:ring-2 focus:ring-red-600/50 focus:outline-none;
   }
 
   .btn-outline {
-    @apply flex flex-row text-sm text-foreground justify-center items-center border border-primary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary/50 p-4 cursor-pointer transition-colors duration-200;
+    @apply text-foreground border-primary hover:bg-primary/10 focus:ring-primary/50 flex max-h-10 cursor-pointer flex-row items-center justify-center gap-2 border p-4 text-sm transition-colors duration-200 focus:ring-2 focus:outline-none;
   }
 
   .btn-secondary {
-    @apply flex flex-row text-sm text-foreground justify-center items-center bg-secondary text-background hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-secondary/50 p-4 cursor-pointer transition-colors duration-200;
+    @apply text-foreground bg-secondary hover:bg-secondary/80 focus:ring-secondary/50 flex max-h-10 cursor-pointer flex-row items-center justify-center gap-2 p-4 text-sm transition-colors duration-200 focus:ring-2 focus:outline-none;
+  }
+  .statusBadge {
+    @apply bg-card text-foreground mb-2 inline-flex items-center p-1 px-2 py-1 text-xs font-medium;
   }
 }
 
@@ -87,7 +94,7 @@
   }
 
   input {
-    @apply w-full p-4 border border-border hover:bg-muted/20 focus:bg-muted/75 focus:outline-none focus:ring-2 focus:ring-primary text-sm;
+    @apply border-border hover:bg-muted/20 focus:bg-muted/75 focus:ring-primary w-full border p-4 text-sm focus:ring-2 focus:outline-none;
   }
 }
 
