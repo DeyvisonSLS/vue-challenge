@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import MailIcon from '@/assets/mail.svg?component'
-import PasswordIcon from '@/assets/lock.svg?component'
+import MailIcon from '@/assets/icons/mail.svg?component'
+import PasswordIcon from '@/assets/icons/lock.svg?component'
 
 interface Props {
   label: string
@@ -28,7 +28,10 @@ const updateValue = (event: Event) => {
 
 <template>
   <div class="flex flex-col mb-5 space-y-2">
-    <label :for="id" class="text-sm text-foreground ml-1">
+    <label
+      :for="id"
+      class="text-sm text-foreground ml-1"
+    >
       {{ label }}
     </label>
     <div class="relative flex items-center">
@@ -41,8 +44,14 @@ const updateValue = (event: Event) => {
         class="pl-12"
       />
       <div class="absolute w-4 h-4 -translate-y-1/2 top-1/2 left-5 opacity-50">
-        <MailIcon v-if="type === 'email'" class="w-4 h-4" />
-        <PasswordIcon v-if="type === 'password'" class="w-4 h-4" />
+        <MailIcon
+          v-if="type === 'email'"
+          class="w-4 h-4"
+        />
+        <PasswordIcon
+          v-if="type === 'password'"
+          class="w-4 h-4"
+        />
       </div>
     </div>
   </div>

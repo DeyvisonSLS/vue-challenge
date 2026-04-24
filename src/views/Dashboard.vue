@@ -1,29 +1,29 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import WelcomeModal from '@/components/WelcomeModal.vue'
-import { useRoute } from 'vue-router'
-import RefreshIcon from '@/assets/refresh-ccw.svg?component'
-import Spinner from '@/assets/loader-circle.svg?component'
+import { useRoute, useRouter } from 'vue-router'
+import RefreshIcon from '@/assets/icons/refresh-ccw.svg?component'
+import LogoutIcon from '@/assets/icons/log-out.svg?component'
+import Spinner from '@/assets/icons/loader-circle.svg?component'
+import Tooltip from '@/components/Tooltip.vue'
 
 const route = useRoute()
+const router = useRouter()
 const isModalOpen = ref(false)
 const components = ref<any[]>([])
+const occurrences = ref<any[]>([])
 const error = ref<string | null>(null)
 const isLoading = ref(true)
-const lastUpdate = ref(0)
+const lastUpdateTime = ref(0)
+const maxUpdateTimeInMinutes = 1 // minutos
+const maxSeconds = maxUpdateTimeInMinutes * 60 // segundos
+const isAnimating = ref(false)
 
-// Verificar se o usuário já visitou a página antes de mostrar o modal
-onMounted(() => {
-  if (route.query.popup === 'welcome') {
-    const hasVisited = localStorage.getItem('hasVisited')
-    if (!hasVisited) {
-      isModalOpen.value = true
-    }
-  }
-})
+let timer: ReturnType<typeof setInterval>
 
 // Função de fetch no endpoint do github
 const fetchStatus = async () => {
+  console.log('Fetching status...')
   isLoading.value = true
   error.value = null
 
@@ -34,7 +34,11 @@ const fetchStatus = async () => {
     }
 
     const data = await response.json()
+
+    occurrences.value = data.occurrences
     components.value = data.components.filter((component: any) => component.showcase === true)
+
+    lastUpdateTime.value = 0
   } catch (err) {
     error.value = 'Erro ao buscar dados no servidor do github. Tente novamente mais tarde.'
   } finally {
@@ -42,49 +46,145 @@ const fetchStatus = async () => {
   }
 }
 
-onMounted(() => {
-  fetchStatus()
+const timerProgress = computed(() => {
+  return `${(lastUpdateTime.value / maxSeconds) * 100}%`
 })
 
-const interval = setInterval(() => {
-  lastUpdate.value += 1
-}, 60000) // Incrementa a cada minuto
+const startTimer = () => {
+  if (timer) clearInterval(timer)
+
+  timer = setInterval(() => {
+    lastUpdateTime.value++
+
+    // Chama fetch a cada maxUpdateTimeInMinutes em minutos
+    if (lastUpdateTime.value >= maxSeconds) {
+      handleManualRefresh()
+    }
+  }, 1000) // Incrementa a cada segundo
+}
+
+const handleManualRefresh = async () => {
+  await fetchStatus()
+
+  // Marca animação como true
+  isAnimating.value = true
+
+  setTimeout(() => {
+    isAnimating.value = false
+    lastUpdateTime.value = 0
+    startTimer()
+  }, 1000) // Duração da animação
+}
+
+// Verificar se o usuário já visitou a página antes de mostrar o modal
+onMounted(() => {
+  handleManualRefresh()
+
+  if (route.query.popup === 'welcome') {
+    isModalOpen.value = true
+  }
+})
+
+onUnmounted(() => {
+  if (timer) clearInterval(timer)
+})
 
 const getFormatedLastUpdate = () => {
-  if (lastUpdate.value < 60) {
-    return `${lastUpdate.value} minutos atrás`
+  const seconds = lastUpdateTime.value
+  if (seconds < 60) {
+    return `menos de 1 minuto`
   } else {
-    const hours = Math.floor(lastUpdate.value / 60)
-    return `${hours} horas atrás`
+    const minutes = Math.floor(seconds / 60)
+    return `${minutes} minutos atrás`
   }
+}
+
+const getTimeRemainingUntilUpdate = () => {
+  const maxSeconds = maxUpdateTimeInMinutes * 60
+  const remainingSeconds = maxSeconds - lastUpdateTime.value
+  const minutesAndSeconds = formatTime(remainingSeconds)
+  return minutesAndSeconds
+}
+
+const formatTime = (remainingSeconds: number) => {
+  const minutes = Math.floor(remainingSeconds / 60)
+  return `${minutes}:${String(remainingSeconds % 60).padStart(2, '0')}`
 }
 
 const closeModal = () => {
   isModalOpen.value = false
   localStorage.setItem('hasVisited', 'true')
 }
+
+const logout = () => {
+  router.push('/login')
+  localStorage.removeItem('user_token')
+}
 </script>
 
 <template>
-  <main class="flex flex-col items-start justify-start w-full max-w-4xl min-h-screen p-12">
-    <header>
+  <main class="flex flex-col items-start justify-start w-full max-w-7xl min-h-screen p-12">
+    <header
+      class="flex flex-row items-center justify-between w-full mb-8 border-b border-border/50"
+    >
       <!-- Header content -->
       <div class="flex flex-col mb-12">
-        <h1 class="text-3xl font-bold">Dashboard</h1>
-        <p class="text-lg text-muted-foreground/50">Bem-vindo ao seu dashboard!</p>
+        <h1 class="text-2xl font-bold">Status Monitor</h1>
       </div>
 
       <!-- Action buttons -->
       <div class="flex space-x-4 mb-8">
-        <p class="text-sm text-muted-foreground/50">
-          Última atualização: {{ getFormatedLastUpdate() }}
+        <p class="flex flex-row items-center text-sm text-muted-foreground/50">
+          Última atualização há {{ getFormatedLastUpdate() }}
         </p>
-        <button class="btn-outline p-3!">
-          <RefreshIcon class="w-4 h-4" />
-        </button>
+        <!-- Refresh button -->
+        <Tooltip
+          position="bottom"
+          :text="`Próxima atualização em ${getTimeRemainingUntilUpdate()}`"
+        >
+          <button
+            class="relative btn-outline p-3!"
+            @click="handleManualRefresh()"
+          >
+            <RefreshIcon
+              class="w-4 h-4"
+              :class="{ 'spin-after-countdown': isAnimating === true }"
+            />
+            <div
+              class="absolute inset-0 bg-primary/20 transition-all duration-300 pointer-events-none"
+              :style="{ insetBlockStart: timerProgress }"
+            ></div>
+          </button>
+        </Tooltip>
+        <!-- Logout button-->
+        <Tooltip
+          position="bottom"
+          text="Sair"
+        >
+          <button
+            class="relative btn-primary p-3!"
+            @click="logout"
+          >
+            <LogoutIcon class="w-4 h-4" />
+          </button>
+        </Tooltip>
       </div>
     </header>
 
+    <!-- Last occurrence -->
+    <div class="flex flex-col w-full gap-4 mb-8">
+      <div
+        v-if="occurrences && occurrences.length > 0"
+        class="w-full mb-8 p-4 bg-card rounded-lg shadow-md"
+      >
+        <h2 class="text-lg font-semibold mb-2">Última ocorrência</h2>
+        <p class="text-sm text-muted-foreground/50">
+          {{ occurrences[0].name }} - {{ occurrences[0].status }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Main content -->
     <div class="flex flex-col w-full gap-4 mb-8">
       <!-- Loading state -->
       <div
@@ -106,13 +206,19 @@ const closeModal = () => {
       <!-- Grid mapping -->
       <div
         v-else
-        class="grid grid-cols-4 gap-4"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
       >
         <div
           v-for="item in components"
           :key="item.id"
-          class="col-span-1 p-4 bg-card rounded-lg shadow-md"
+          class="col-span-1 p-4 border-border border shadow-md"
         >
+          <span
+            class="statusBadge"
+            :class="`bg-${item.status === 'ativo' ? 'status-operational' : 'status-degraded'}/20 text-${item.status === 'ativo' ? 'status-operational' : 'status-degraded'}`"
+          >
+            {{ item.status }}
+          </span>
           <h2 class="text-xl font-semibold mb-2">{{ item.name }}</h2>
           <p class="text-sm text-muted-foreground/50">
             {{ item.description || 'Sem descrição disponível.' }}
@@ -121,6 +227,7 @@ const closeModal = () => {
       </div>
     </div>
 
+    <!-- Modal de boas-vindas -->
     <WelcomeModal
       v-if="isModalOpen"
       @close="closeModal"
@@ -129,3 +236,35 @@ const closeModal = () => {
     />
   </main>
 </template>
+
+<style scoped>
+@import 'tailwindcss';
+.statusBadge {
+  @apply inline-flex items-center py-1 text-xs font-medium rounded-full;
+}
+
+@keyframes spin-refresh-animation {
+  0% {
+    opacity: 100%;
+    rotate: 0deg;
+  }
+  25% {
+    opacity: 10%;
+  }
+  50% {
+    opacity: 100%;
+  }
+  75% {
+    opacity: 10%;
+  }
+  100% {
+    opacity: 100%;
+    rotate: -360deg;
+  }
+}
+
+.spin-after-countdown {
+  animation: spin-refresh-animation ease-in-out infinite;
+  animation-duration: 1s; /* Duração da animação igual ao tempo de atualização */
+}
+</style>
