@@ -1,35 +1,86 @@
-@import './base.css';
+@import 'tailwindcss';
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
+@theme {
+  /* Status colors */
+  --color-status-operational: var(--background);
+  --color-status-degraded: var(--secondary);
+  --color-status-partial: var(--primary);
+
+  /* Branding Colors */
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+
+  /* Neutral Colors */
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-background: var(--background);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
+:root {
+  --background: hsla(0, 0%, 100%, 1);
+  --foreground: hsla(0, 0%, 7%, 1);
+  --muted-foreground: hsla(0, 0%, 50%, 1);
+  --muted: hsla(0, 0%, 98%, 1);
+  --card: hsla(0, 0%, 98%, 1);
+  --border: hsla(0, 0%, 98%, 1);
+  --primary: hsla(108, 87.4%, 46.9%, 1);
+  --secondary: hsla(24, 94%, 53%, 1);
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+.dark {
+  --background: hsla(0, 0%, 7%, 1);
+  --foreground: hsla(0, 0%, 100%, 1);
+  --muted: hsla(0, 0%, 20%, 1);
+  --muted-foreground: hsla(0, 0%, 50%, 1);
+  --card: hsla(0, 0%, 20%, 1);
+  --border: hsla(0, 0%, 20%, 1);
+  --primary: hsl(246, 100%, 67%);
+  --secondary: hsla(24, 94%, 53%, 1);
+}
+
+@layer components {
+  .btn-global {
+    @apply flex flex-row justify-center items-center bg-primary/60 hover:bg-primary w-full text-background hover:text-background/80 focus:outline-none focus:ring-2 focus:ring-primary/50 py-3 px-4 cursor-pointer transition-colors duration-200;
+  }
+
+  .btn-primary {
+    @apply flex flex-row rounded-full text-sm text-foreground justify-center items-center bg-primary text-background hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-primary/50 py-3.5 px-4 cursor-pointer transition-colors duration-200;
+  }
+
+  .btn-outline {
+    @apply flex flex-row rounded-full text-sm text-foreground justify-center items-center border border-primary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary/50 p-4 cursor-pointer transition-colors duration-200;
+  }
+
+  .btn-secondary {
+    @apply flex flex-row rounded-full text-sm text-foreground justify-center items-center bg-secondary text-background hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-secondary/50 p-4 cursor-pointer transition-colors duration-200;
   }
 }
 
-@media (min-width: 1024px) {
+@layer base {
   body {
-    display: flex;
-    place-items: center;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
   }
 
   #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
   }
+
+  input {
+    @apply w-full rounded-full p-4 border border-border hover:bg-muted/20 focus:bg-muted/75 focus:outline-none focus:ring-2 focus:ring-primary text-sm;
+  }
+}
+
+a {
+  @apply text-primary transition-colors duration-200 hover:opacity-50;
+  text-decoration: none;
 }
