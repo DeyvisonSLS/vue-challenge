@@ -2,13 +2,14 @@
 import FilterIcon from '@/assets/icons/funnel.svg?component'
 import Tooltip from '@/components/Tooltip.vue'
 import { onClickOutside } from '@vueuse/core'
-import { ref, Transition } from 'vue'
+import { computed, ref, Transition } from 'vue'
 import Select from '@/components/Select.vue'
-
-type StatusType = 'operational' | 'degraded' | 'outage' | ''
+import type { StatusType } from '@/constants/status'
+import { CATEGORY_OPTIONS as categories } from '@/constants/status'
 
 export interface FilterData {
   status: StatusType
+  category: string
 }
 
 // Recebe estado atual
@@ -24,7 +25,12 @@ const handleApplyFilter = () => {
   emit('apply', localFilters.value)
 }
 const handleClearFilter = () => {
-  localFilters.value.status = ''
+  // Pega as chaves no localFilters e depois usa para apagar
+  Object.keys(localFilters.value).forEach((key) => {
+    // Type assertion para dar certo e apagamento do valor
+    localFilters.value[key as keyof typeof localFilters.value] = ''
+  })
+
   emit('apply', localFilters.value)
 }
 
@@ -35,6 +41,10 @@ const dropdownRef = ref<HTMLElement | null>(null)
 const handleToggleFilterDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value
 }
+
+const activeFiltersCount = computed(() => {
+  return Object.values(localFilters.value).filter((value) => value != '').length
+})
 
 onClickOutside(dropdownRef, () => {
   isDropdownOpen.value = false
@@ -59,10 +69,10 @@ onClickOutside(dropdownRef, () => {
       </button>
       <!-- Bullet mockado -->
       <div
-        v-if="localFilters.status"
-        class="text-background absolute -top-2 -right-2 h-4 w-4 rounded-full bg-white text-center text-xs"
+        v-if="activeFiltersCount"
+        class="text-background absolute -top-2 -right-2 h-4 w-4 rounded-full bg-yellow-500 text-center text-xs font-bold"
       >
-        1
+        {{ activeFiltersCount }}
       </div>
     </div>
 
@@ -76,26 +86,34 @@ onClickOutside(dropdownRef, () => {
           id="status-filter"
           v-model="localFilters.status"
           label="Status"
-          placeholder="Selecione um status"
+          placeholder="Selecione um status..."
           :optionsList="['operational', 'degraded', 'outage']"
         />
+        <Select
+          id="category-filter"
+          v-model="localFilters.category"
+          label="Categoria"
+          placeholder="Selecione uma categoria..."
+          :optionsList="categories"
+        />
+        <!-- Buttons -->
         <div class="flex flex-col gap-2">
           <Transition name="fade">
             <button
               @click="handleApplyFilter"
               typeof="submit"
               class="btn-primary w-full"
-              :disabled="!localFilters.status"
+              :disabled="!localFilters.status && !localFilters.category"
             >
               Aplicar Filtros
             </button>
           </Transition>
           <button
-            v-if="localFilters.status"
+            v-if="activeFiltersCount"
             @click="handleClearFilter"
             typeof="submit"
             class="btn-secondary w-full"
-            :disabled="!localFilters.status"
+            :disabled="!localFilters.status && !localFilters.category"
           >
             Limpar Filtros
           </button>

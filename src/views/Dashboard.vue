@@ -4,10 +4,10 @@ import WelcomeModal from '@/components/WelcomeModal.vue'
 import { useRoute, useRouter } from 'vue-router'
 import RefreshIcon from '@/assets/icons/refresh-ccw.svg?component'
 import LogoutIcon from '@/assets/icons/log-out.svg?component'
-import Spinner from '@/assets/icons/loader-circle.svg?component'
 import Tooltip from '@/components/Tooltip.vue'
 import Filter from './Filter.vue'
 import type { FilterData } from './Filter.vue'
+import { CATEGORY_MAP as categories } from '@/constants/status'
 
 const route = useRoute()
 const router = useRouter()
@@ -31,6 +31,7 @@ let timer: ReturnType<typeof setInterval>
 
 const filters = ref<FilterData>({
   status: '',
+  category: '',
 })
 
 // Verificar se o usuário já visitou a página antes de mostrar o modal
@@ -64,14 +65,32 @@ const fetchStatus = async () => {
     const data = await response.json()
 
     // Filtra apenas os com showcase = true
-    const visibleComponents = data.components.filter(
-      (component: any) => component.showcase === true
-    )
+    const visibleComponents = data.components.filter((component: any) => component.showcase)
 
     // Aplica ou não os filtros, dependendo se há filtro selecionado
-    const filteredComponents = filters.value.status
-      ? visibleComponents.filter((component: any) => component.status === filters.value.status)
-      : visibleComponents
+    // const filteredComponents = filters.value.status
+    //   ? visibleComponents.filter((component: any) => component.status === filters.value.status)
+    //   : visibleComponents
+
+    // Aplica múltiplos filtros
+    const filteredComponents = visibleComponents.filter((component: any) => {
+      return Object.entries(filters.value).every(([key, value]) => {
+        // Filtro vazio não retorna
+        if (!value) return true
+
+        if (key === 'category') {
+          // Usando o nome do item no mapping para retornar a categoria
+          const componentCategory = categories[component.name] || 'Others'
+          // Usando a categoria extraída no mapping e comparando com a categoria que veio do select
+          return componentCategory === value
+        }
+
+        // Compara a propriedade do component com o valor vindo do filtro
+        return component[key] === value
+      })
+    })
+
+    console.log('Filtered components: ', filteredComponents)
 
     components.value = filteredComponents
     occurrences.value = data.occurrences
@@ -145,7 +164,7 @@ const logout = () => {
   localStorage.removeItem('user_token')
 }
 
-const handleApplyFilter = async (newFilters: FilterData) => {
+const handleApplyFilters = async (newFilters: FilterData) => {
   // Preparado para receber outros filtros
   filters.value = { ...newFilters }
   console.log('Filters updated' + filters.value.status)
@@ -224,7 +243,7 @@ const handleApplyFilter = async (newFilters: FilterData) => {
         <span class="text-md text-foreground">Mostrando {{ components.length }} serviços:</span>
         <Filter
           :initial-filters="filters"
-          @apply="handleApplyFilter"
+          @apply="handleApplyFilters"
         />
       </div>
       <!-- Loading state -->
