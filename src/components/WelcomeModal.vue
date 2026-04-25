@@ -1,13 +1,15 @@
 <script setup lang="ts">
-  interface Props {
-    title: string
-    description: string
-  }
+import bg from '@/assets/modal-welcome-gray.png'
 
-  const props = withDefaults(defineProps<Props>(), {
-    title: 'Title',
-    description: 'This is where the description goes.',
-  })
+interface Props {
+  title: string
+  description: string
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  title: 'Title',
+  description: 'This is where the description goes.',
+})
 </script>
 <template lang="">
   <div>
@@ -16,10 +18,10 @@
       <!-- Modal content -->
       <div
         class="entrance-animation bg-card border-border w-full max-w-lg overflow-clip border shadow-lg"
-        style="animationdelay: 200ms"
+        :style="{ animationDelay: "200ms", backgroundImage: `url(${bg})` }"
       >
         <div
-          class="from-primary h-80 bg-linear-to-t bg-[url(img/modal-welcome-gray.png)] to-transparent mask-b-to-100% bg-cover bg-center"
+          class="from-primary h-80 bg-linear-to-t to-transparent mask-b-to-100% bg-cover bg-center"
         ></div>
         <div class="p-6 text-center">
           <h2
@@ -48,20 +50,20 @@
 </template>
 
 <style lang="css">
-  @keyframes fade-in-slide {
-    from {
-      opacity: 0;
-      transform: translateY(5%);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0%);
-    }
-  }
-
-  .entrance-animation {
+@keyframes fade-in-slide {
+  from {
     opacity: 0;
-    will-change: transform, opacity;
-    animation: fade-in-slide 0.9s ease forwards;
+    transform: translateY(5%);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+
+.entrance-animation {
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: fade-in-slide 0.9s ease forwards;
+}
 </style>
