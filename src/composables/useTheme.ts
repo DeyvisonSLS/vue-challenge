@@ -1,6 +1,6 @@
 import { onMounted, ref, watch, watchEffect } from 'vue'
 
-const isDark = ref(false)
+const isDark = ref(true)
 
 export function useTheme() {
   const updateDom = () => {
