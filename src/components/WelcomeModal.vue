@@ -15,10 +15,10 @@ const props = withDefaults(defineProps<Props>(), {
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
       <!-- Modal content -->
       <div
-        class="entrance-animation bg-card! border-border w-full max-w-lg overflow-clip border shadow-lg"
+        class="entrance-animation bg-card! border-border mx-8 w-full max-w-lg overflow-clip border shadow-lg"
       >
         <div
-          class="from-primary h-80 bg-linear-to-t to-transparent mask-b-to-100% bg-cover bg-center"
+          class="from-primary h-50 bg-linear-to-t to-transparent mask-b-to-100% bg-cover bg-center sm:h-60 md:h-80"
           :style="{
             animationDelay: '200ms',
             background: 'no-repeat top center/100% url(/img/modal-welcome-gray.png)',
@@ -28,20 +28,20 @@ const props = withDefaults(defineProps<Props>(), {
         <div class="p-6 text-center">
           <h2
             class="entrance-animation mb-4 font-bold *:text-2xl"
-            style="animationDelay: 300ms"
+            style="animationdelay: 300ms"
           >
             {{ title }}
           </h2>
           <p
             class="entrance-animation text-foreground mb-6"
-            style="animationDelay: 500ms"
+            style="animationdelay: 500ms"
           >
             {{ description }}
           </p>
           <button
             @click="$emit('close')"
             class="entrance-animation btn-primary w-full font-medium"
-            style="animationDelay: 800ms"
+            style="animationdelay: 800ms"
           >
             Entendi!
           </button>

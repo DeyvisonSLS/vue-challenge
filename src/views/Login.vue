@@ -74,7 +74,7 @@
 
     <!-- Login card -->
     <div
-      class="from-border/80 to-border/30 z-50 flex w-full max-w-md flex-col items-center justify-center bg-linear-to-t p-px"
+      class="bg-transparent md:from-border/80 md:to-border/30 z-50 flex w-full max-w-md flex-col items-center justify-center bg-linear-to-t p-px"
     >
       <div class="item-start bg-background flex w-full flex-col p-8">
         <!-- Login card -->

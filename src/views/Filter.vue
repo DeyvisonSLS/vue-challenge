@@ -2,7 +2,7 @@
 import FilterIcon from '@/assets/icons/funnel.svg?component'
 import Tooltip from '@/components/Tooltip.vue'
 import { onClickOutside } from '@vueuse/core'
-import { computed, ref, Transition } from 'vue'
+import { computed, ref, Transition, watch } from 'vue'
 import Select from '@/components/Select.vue'
 import type { StatusType } from '@/constants/status'
 import { CATEGORY_OPTIONS as categories } from '@/constants/status'
@@ -14,6 +14,14 @@ export interface FilterData {
 
 // Recebe estado atual
 const props = defineProps<{ initialFilters: FilterData }>()
+
+// Atualiza o localFilters quando o initialFilters alterar (ocorre quando clicar em limpar filtros no empty state do dashboard)
+watch(
+  () => props.initialFilters,
+  (newFilters) => {
+    localFilters.value = { ...newFilters }
+  }
+)
 
 // Envia estado atualizado
 const emit = defineEmits<{ (e: 'apply', payload: FilterData): void }>()
@@ -103,7 +111,6 @@ onClickOutside(dropdownRef, () => {
               @click="handleApplyFilter"
               typeof="submit"
               class="btn-primary w-full"
-              :disabled="!localFilters.status && !localFilters.category"
             >
               Aplicar Filtros
             </button>

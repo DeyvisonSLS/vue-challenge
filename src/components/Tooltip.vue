@@ -1,16 +1,29 @@
 <script setup lang="ts">
-  // Interface para a tooltip, ela envolverá o botão e instanciará a tooltip
-  interface Props {
-    text: string
-    position: 'top' | 'bottom'
-    isActive?: boolean
+import { computed } from 'vue';
+
+// Interface para a tooltip, ela envolverá o botão e instanciará a tooltip
+interface Props {
+  text: string
+  position: 'top' | 'bottom'
+  isActive?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  text: 'String',
+  position: 'top',
+  isActive: true,
+})
+
+const arrowClasses = computed(() => {
+  const base = 'absolute left-1/2 -translate-x-1/2 border-x-[6px] border-x-transparent'
+
+  const positions = {
+    top: 'top-full border-t-[6px] border-t-card',
+    bottom: 'bottom-full border-b-[6px] border-b-card',
   }
 
-  const props = withDefaults(defineProps<Props>(), {
-    text: 'String',
-    position: 'top',
-    isActive: true,
-  })
+  return `${base} ${positions[props.position]}`
+})
 </script>
 <template>
   <div class="group relative inline-block">
@@ -22,7 +35,7 @@
     >
       <!-- Arrow -->
       <div
-        :class="`absolute ${props.position === 'top' ? 'bottom' : 'bottom'}-full left-1/2 -translate-x-1/2 border-r-[6px] border-l-[6px] border-r-transparent border-l-transparent border-${props.position === 'top' ? 't' : 'b'}-[6px] border-${props.position === 'bottom' ? 'b' : 't'}-card`"
+        :class="arrowClasses"
       ></div>
       <p class="w-full text-center">{{ text }}</p>
     </div>
