@@ -1,14 +1,27 @@
 {
-  "$schema": "https://json.schemastore.org/prettierrc",
   "semi": false,
-  "singleQuote": true,
-  "printWidth": 100,
-  "tabWidth": 2,
-  "trailingComma": "all",
   "singleAttributePerLine": true,
-  "bracketSameLine": false,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "useTabs": false,
+  "trailingComma": "es5",
+  "printWidth": 100,
+  "bracketSpacing": true,
   "arrowParens": "always",
   "endOfLine": "auto",
-  "vueIndentScriptAndStyle": true,
-  "plugins": ["prettier-plugin-tailwindcss"]
+  "plugins": ["@trivago/prettier-plugin-sort-imports","prettier-plugin-tailwindcss", "eslint-plugin-perfectionist"],
+  "rules": {
+    "perfectionist/sort-interfaces": "error",
+    "perfectionist/sort-objects": "error",
+    "perfectionist/sort-named-imports": "error",
+    "perfectionist/sort-enums": "error",
+    "vue/define-macros-order": ["error", {
+      "order": ["defineProps", "defineEmits", "defineModel"]
+    }],
+    "vue/attributes-order": "error",
+    "vue/order-in-components": "error"
+  },
+  "importOrder": ["^vue", "^@/(.*)$", "^[./]"],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }

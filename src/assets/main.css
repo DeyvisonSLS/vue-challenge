@@ -25,7 +25,6 @@
   --muted-foreground: hsla(0, 0%, 50%, 1);
   --muted: hsla(0, 0%, 98%, 1);
   --card: hsla(0, 0%, 98%, 1);
-  --border: hsla(0, 0%, 98%, 1);
   --primary: hsla(108, 87.4%, 46.9%, 1);
   --secondary: hsla(24, 94%, 53%, 1);
   --border: hsla(0, 0%, 98%, 1);
@@ -37,10 +36,9 @@
   --muted: hsla(0, 0%, 20%, 1);
   --muted-foreground: hsla(0, 0%, 50%, 1);
   --card: hsla(0, 0%, 20%, 1);
-  --border: hsla(0, 0%, 20%, 1);
   --primary: hsl(246, 100%, 67%);
-  --secondary: hsl(165, 100%, 65%);
-  --border: hsla(0, 0%, 20%, 1);
+  --secondary: hsla(0, 0%, 31%, 1);
+  --border: hsla(0, 0%, 37%, 1);
 }
 
 @layer components {
@@ -95,6 +93,10 @@
 
   input {
     @apply border-border hover:bg-muted/20 focus:bg-muted/75 focus:ring-primary w-full border p-4 text-sm focus:ring-2 focus:outline-none;
+  }
+
+  select {
+    @apply appearance-none border border-border bg-card hover:bg-muted/80 focus:bg-muted/75 focus:ring-primary w-full p-4 text-sm focus:ring-2 focus:outline-none;
   }
 }
 
