@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<Props>(), {
       <!-- Modal content -->
       <div
         class="entrance-animation bg-card border-border w-full max-w-lg overflow-clip border shadow-lg"
-        :style="{ animationDelay: "200ms", backgroundImage: `url(${bg})` }"
+        :style="{ animationDelay: '200ms', backgroundImage: `url(${bg})` }"
       >
         <div
           class="from-primary h-80 bg-linear-to-t to-transparent mask-b-to-100% bg-cover bg-center"
