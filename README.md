@@ -1,4 +1,4 @@
-# vue-project
+# vue-challenge
 
 Aplicação desenvolvida como solução para o Desafio Técnico Vue.js (Mobile – Nível Júnior), com foco em clareza de código, organização e boas práticas do ecossistema Vue.
 
