@@ -73,7 +73,7 @@ onClickOutside(dropdownRef, () => {
         @click="handleToggleFilterDropdown()"
       >
         <FilterIcon class="h-4 w-4" />
-        Filtros
+        <span class="hidden md:flex">Filtros</span>
       </button>
       <!-- Bullet mockado -->
       <div

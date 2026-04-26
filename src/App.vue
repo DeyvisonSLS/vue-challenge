@@ -10,7 +10,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="flex h-screen w-screen flex-col items-center justify-center">
+  <main class="flex h-screen w-full flex-col items-center justify-center">
     <RouterView />
   </main>
 </template>
