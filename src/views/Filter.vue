@@ -75,7 +75,8 @@ onClickOutside(dropdownRef, () => {
         <FilterIcon class="h-4 w-4" />
         <span class="hidden md:flex">Filtros</span>
       </button>
-      <!-- Bullet mockado -->
+
+      <!-- Bullet counter -->
       <div
         v-if="activeFiltersCount"
         class="text-background absolute -top-2 -right-2 h-4 w-4 rounded-full bg-yellow-500 text-center text-xs font-bold"
@@ -88,7 +89,7 @@ onClickOutside(dropdownRef, () => {
     <Transition name="dropdown-fade-slide">
       <div
         v-if="isDropdownOpen"
-        class="bg-card absolute top-full right-0 z-10 w-80 translate-y-3 p-4 opacity-100 shadow-lg transition-all duration-300"
+        class="bg-card absolute top-full right-0 z-100 w-80 translate-y-3 p-4 opacity-100 shadow-lg transition-all duration-300"
       >
         <Select
           id="status-filter"

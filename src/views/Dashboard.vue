@@ -163,9 +163,8 @@ const mobileMenuItems = [
     label: 'Logout',
     icon: LogoutIcon,
     action: () => logout(),
-  }
+  },
 ]
-
 
 const getFormatedLastUpdate = () => {
   const seconds = lastUpdateTime.value
@@ -219,7 +218,7 @@ const statusClasses: Record<string, string> = {
 </script>
 
 <template>
-  <main class="flex min-h-screen w-full max-w-7xl flex-col items-start justify-start p-12">
+  <main class="flex min-h-screen w-full max-w-7xl flex-col items-start justify-start p-8 md:p-12">
     <!-- Header Desktop -->
     <header class="mb-2 hidden w-full flex-row items-center justify-between md:flex">
       <!-- Header content -->
@@ -283,7 +282,11 @@ const statusClasses: Record<string, string> = {
 
       <!-- Action buttons -->
       <div class="mb-8 flex flex-row items-center justify-center space-x-4">
-        <Dropdown label="Menu" :icon="SlidersHorizontalIcon" :items="mobileMenuItems" />
+        <Dropdown
+          label="Menu"
+          :icon="SlidersHorizontalIcon"
+          :items="mobileMenuItems"
+        />
       </div>
     </header>
 
